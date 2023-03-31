@@ -1,0 +1,179 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Könyv és Szerző adattároló</title>
+
+    <link rel="stylesheet"
+          th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
+    <script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+
+
+</head>
+<body>
+
+<div th:insert="~{shared/navBar :: navbar}"></div>
+
+<h3 class="text-center pt-5">Könyv és Szerző adattároló</h3>
+
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="search-input">Írjon be egy szerző nevet a kereséshez:</label>
+            <input type="text" class="form-control" id="search-input" placeholder="Keresés" onkeyup="searchTableAuthor()">
+        </div>
+    </form>
+</div>
+<div class="container">
+    <h3 class="pt-5">Szerzők, akik már rendelkeznek kapcsolattal a könyvekkel az adatbázisban: </h3>
+
+
+    <table class="table table-striped pt-5">
+        <caption>Szerzők, akik már rendelkeznek kapcsolattal a könyvekkel az adatbázisban</caption>
+        <thread>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Név</th>
+                <th scope="col">Műveletek</th>
+            </tr>
+        </thread>
+        <tbody>
+        <tr th:each="author: ${authors}">
+            <th scope="row"
+                th:text="${author.id}"></th>
+            <td th:text="${author.name}"></td>
+
+            <td>
+                <a th:href="@{'/aut-hor/' + ${author.id}}"
+                   type="button"
+                   class="btn btn-warning">Szerkesztés</a>
+                <a th:href="@{'/aut-hor/' + ${author.id} + '/delete'}"
+                   type="button"
+                   class="btn btn-danger">Törlés</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="container">
+    <form>
+        <div class="form-group">
+            <label for="search-input">Írjon be egy könyv címet a kereséshez:</label>
+            <input type="text" class="form-control" id="search-input2" placeholder="Keresés" onkeyup="searchTableBook()">
+        </div>
+    </form>
+</div>
+
+<div class="container">
+    <h3 class="pt-5">Könyvek, amik már rendelkeznek kapcsolattal a szerzőkkel az adatbázisban: </h3>
+
+    <table class="table table-striped pt-5" id="booksTable">
+        <caption>Könyvek, amik már rendelkeznek kapcsolattal a szerzőkkel az adatbázisban</caption>
+        <thread>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Cím</th>
+                <th scope="col">Nyelv</th>
+                <th scope="col">Műveletek</th>
+            </tr>
+        </thread>
+        <tbody>
+        <tr th:each="book: ${books}">
+            <th scope="row"
+                th:text="${book.id}"></th>
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.language}"></td>
+
+            <td>
+                <a th:href="@{'/bo-ok/' + ${book.id}}"
+                   type="button"
+                   class="btn btn-warning">Szerkesztés</a>
+                <a th:href="@{'/bo-ok/' + ${book.id} + '/delete'}"
+                   type="button"
+                   class="btn btn-danger">Törlés</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="container" style="margin-bottom: 50px">
+    <h3 class="pt-5">Szerző rendelése könyvhőz</h3>
+    <form th:action="@{/author-book/add-relationship}" method="post">
+        <label for="authorName">Szerző neve: </label>
+        <select id="authorName" name="authorName" required>
+            <option th:each="noauthor : ${noauthors}" th:value="${noauthor.name}" th:text="${noauthor.name}"></option>
+        </select>
+
+        <label for="bookTitle">Könyv címe: </label>
+        <select id="bookTitle" name="bookTitle" required>
+            <option th:each="nobook : ${nobooks}" th:value="${nobook.title}" th:text="${nobook.title}"></option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">Hozzáadás</button>
+    </form>
+</div>
+
+
+
+
+
+<script>
+function searchTableAuthor() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("search-input");
+  filter = input.value.toUpperCase();
+  table = document.getElementsByTagName("table")[0];
+  tr = table.getElementsByTagName("tr");
+
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[0];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+
+function searchTableBook() {
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("search-input2");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("booksTable");
+  tr = table.getElementsByTagName("tr");
+
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].querySelectorAll("td")[0]; // a második oszlop (az index 0-tól indul)
+    th = table.querySelectorAll("th")[1]; // a második oszlop fejléce
+    if (td && (th.textContent.trim().toUpperCase() === 'CÍM' || th.textContent.trim().toUpperCase() === 'CIM')) { // csak a CÍM oszlopra alkalmazzuk a szűrőt
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }
+  }
+}
+
+</script>
+
+
+
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Szerzők listája</title>
+
+    <link rel="stylesheet"
+          th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
+    <script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+</head>
+<body>
+
+<div th:insert="~{shared/navBar :: navbar}"></div>
+<div class="container">
+    <h3 class="pt-5">Szerzők listája</h3>
+
+    <a th:href="@{/aut-hor/create}"
+       type="button"
+       class="btn btn-info">Új Szerző hozzáadása</a>
+
+    <table class="table table-striped pt-5">
+        <caption>Szerzők listája</caption>
+        <thread>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Név</th>
+                <th scope="col">Műveletek</th>
+            </tr>
+        </thread>
+        <tbody>
+        <tr th:each="author: ${authors}">
+            <th scope="row"
+                th:text="${author.id}"></th>
+            <td th:text="${author.name}"></td>
+
+            <td>
+                <a th:href="@{'/aut-hor/' + ${author.id}}"
+                     type="button"
+                     class="btn btn-warning">Szerkesztés</a>
+                  <a th:href="@{'/aut-hor/' + ${author.id} + '/delete'}"
+                     type="button"
+                     class="btn btn-danger">Törlés</a>
+              </td>
+          </tr>
+          </tbody>
+      </table>
+  </div>
+
+  <script>
+
+  </script>
+
+  </body>
+  </html>
