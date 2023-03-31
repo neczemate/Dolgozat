@@ -41,6 +41,6 @@ jobs:
         # Overwrite local artifact version
         mvn -B versions:set -DnewVersion="$version" --file pom.xml
         mvn -B deploy --file pom.xml
-        cp "cars/target/web-${version}.jar" "target/cars.jar"
+        cp "target/neo4j-${version}.jar" "target/neo4j.jar"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
