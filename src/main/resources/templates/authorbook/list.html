@@ -24,7 +24,7 @@
     <form>
         <div class="form-group">
             <label for="search-input">Írjon be egy szerző nevet a kereséshez:</label>
-            <input type="text" class="form-control" id="search-input" placeholder="Keresés" onkeyup="searchTableAuthor()">
+            <input type="text" class="form-control" id="search-input1" placeholder="Keresés" onkeyup="searchTableAuthor()">
         </div>
     </form>
 </div>
@@ -32,7 +32,7 @@
     <h3 class="pt-5">Szerzők, akik már rendelkeznek kapcsolattal a könyvekkel az adatbázisban: </h3>
 
 
-    <table class="table table-striped pt-5">
+    <table class="table table-striped pt-5" id="authorsTable">
         <caption>Szerzők, akik már rendelkeznek kapcsolattal a könyvekkel az adatbázisban</caption>
         <thread>
             <tr>
@@ -121,21 +121,18 @@
     </form>
 </div>
 
-
-
-
-
 <script>
 function searchTableAuthor() {
   var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("search-input");
+  input = document.getElementById("search-input1");
   filter = input.value.toUpperCase();
-  table = document.getElementsByTagName("table")[0];
+  table = document.getElementById("authorsTable");
   tr = table.getElementsByTagName("tr");
 
   for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0];
-    if (td) {
+    td = tr[i].querySelectorAll("td")[0];
+    th = table.querySelectorAll("th")[1];
+    if (td && (th.textContent.trim().toUpperCase() === 'NÉV' || th.textContent.trim().toUpperCase() === 'NEV')) {
       txtValue = td.textContent || td.innerText;
       if (txtValue.toUpperCase().indexOf(filter) > -1) {
         tr[i].style.display = "";
@@ -154,9 +151,9 @@ function searchTableBook() {
   tr = table.getElementsByTagName("tr");
 
   for (i = 0; i < tr.length; i++) {
-    td = tr[i].querySelectorAll("td")[0]; // a második oszlop (az index 0-tól indul)
-    th = table.querySelectorAll("th")[1]; // a második oszlop fejléce
-    if (td && (th.textContent.trim().toUpperCase() === 'CÍM' || th.textContent.trim().toUpperCase() === 'CIM')) { // csak a CÍM oszlopra alkalmazzuk a szűrőt
+    td = tr[i].querySelectorAll("td")[0];
+    th = table.querySelectorAll("th")[1];
+    if (td && (th.textContent.trim().toUpperCase() === 'CÍM' || th.textContent.trim().toUpperCase() === 'CIM')) {
       txtValue = td.textContent || td.innerText;
       if (txtValue.toUpperCase().indexOf(filter) > -1) {
         tr[i].style.display = "";
@@ -168,12 +165,6 @@ function searchTableBook() {
 }
 
 </script>
-
-
-
-
-</script>
-
 
 </body>
 </html>
